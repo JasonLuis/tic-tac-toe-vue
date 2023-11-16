@@ -1,3 +1,10 @@
+import '../src/core/assets/styles/quasar.sass';
+import { setup } from '@storybook/vue3';
+import { Quasar } from 'quasar';
+
+setup((app) => {
+  app.use(Quasar, {});
+});
 import type { Preview } from '@storybook/vue3';
 
 const preview: Preview = {

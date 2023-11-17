@@ -1,0 +1,34 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "files.autoSave": "onFocusChange",
+    "explorer.compactFolders": false,
+    // "css.validate": false,
+    // "less.validate": false,
+    // "scss.validate": false,
+    // "stylelint.validate": ["css", "scss"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[scss]": {
+        "editor.formatOnSave": true,
+    },
+    "[js]": {
+        "editor.formatOnSave": true,
+    },
+    "[json]": {
+        "editor.formatOnSave": true,
+    },
+    "[vue]": {
+        "editor.formatOnSave": false,
+    },
+    "testing.automaticallyOpenPeekView": "never",
+    "editor.suggest.filterGraceful": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false
+    },
+    "editor.suggest.localityBonus": true,
+    "editor.snippetSuggestions": "none"
+}

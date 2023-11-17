@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "formulahendry.auto-rename-tag",
+    "qwtel.sqlite-viewer",
+    "EditorConfig.EditorConfig",
+    "IronGeek.vscode-env",
+    "eamodio.gitlens",
+    "firsttris.vscode-jest-runner",
+    "esbenp.prettier-vscode",
+    "Vue.vscode-typescript-vue-plugin",
+    "Vue.volar",
+    "pflannery.vscode-versionlens"
+  ]
+}

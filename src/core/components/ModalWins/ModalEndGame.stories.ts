@@ -6,6 +6,13 @@ export default {
   argTypes: {
     modal: {
       control: { type: 'boolean' }
+    },
+    textWin: {
+      control: { type: 'text' }
+    },
+    winner: {
+      options: ['O', 'X', ''],
+      control: { type: 'radio' }
     }
   }
 };

@@ -2,12 +2,17 @@
   <q-dialog v-model="openModal" full-width maximized>
     <q-card>
       <q-card-section class="row justify-center q-pa-none">
-        <span class="text-win">player 1 wins!</span>
+        <span class="text-win">{{ props.textWin }}</span>
       </q-card-section>
 
       <q-card-section class="row justify-center items-center q-pa-none q-mt-md">
-        <q-img :src="img" />
-        <span class="next-round">takes the round</span>
+        <q-img
+          v-if="props.winner === Winner.o || props.winner === Winner.x"
+          :src="getIcon"
+        />
+        <span class="next-round" :style="`color: ${getStyle}`">
+          takes the round
+        </span>
       </q-card-section>
 
       <q-card-section class="row justify-center q-pa-none q-mt-lg">
@@ -20,12 +25,19 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+enum Winner {
+  x = 'X',
+  o = 'O'
+}
 const props = withDefaults(
   defineProps<{
     modal: boolean;
+    textWin?: string;
+    winner?: Winner;
   }>(),
   {
-    modal: true
+    modal: true,
+    winner: undefined
   }
 );
 
@@ -33,8 +45,21 @@ const openModal = computed(() => {
   return props.modal;
 });
 
-const img = new URL(`../../assets/icon/icon-o-yellow.svg`, import.meta.url)
-  .href;
+const getIcon = computed(() => {
+  return props.winner === Winner.o
+    ? new URL(`../../assets/icon/icon-o-yellow.svg`, import.meta.url).href
+    : new URL(`../../assets/icon/icon-x-blue.svg`, import.meta.url).href;
+});
+
+const getStyle = computed(() => {
+  if (props.winner === Winner.o) {
+    return '#F2B137';
+  } else if (props.winner === Winner.x) {
+    return '#31C3BD';
+  } else {
+    return '#A8BFC9';
+  }
+});
 </script>
 
 <style scoped lang="scss">

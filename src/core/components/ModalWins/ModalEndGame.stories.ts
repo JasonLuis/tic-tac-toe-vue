@@ -32,6 +32,16 @@ const Template = (args: any, { argTypes }: any) => ({
 export const Default = Template.bind({});
 
 Default.args = {
-  modal: true
+  modal: true,
+  textWind: 'PLAYER 1 WINS!',
+  winner: 'O'
 };
-Default.parameters = {};
+Default.parameters = {
+  docs: {
+    source: {
+      code: `<ui-modal-end-game :modal="modal" :textWin="textWind" :winner="winner"/>`,
+      language: 'vue',
+      type: 'auto'
+    }
+  }
+};

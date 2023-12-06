@@ -11,6 +11,7 @@
           { value: 'X', slot: 'two' },
           { value: 'O', slot: 'three' }
         ]"
+        @update:model-value="onModelUpdate"
       >
         <template #two>
           <div class="select-icon row items-center justify-center">
@@ -32,7 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+
+const emit = defineEmits(['itemSelect']);
 
 const model = ref<string>('X');
 const getIconX = computed(() => {
@@ -45,6 +48,14 @@ const getIconO = computed(() => {
   return model.value === 'O'
     ? new URL(`../../assets/icon/icon-o-selected.svg`, import.meta.url).href
     : new URL(`../../assets/icon/icon-o.svg`, import.meta.url).href;
+});
+
+const onModelUpdate = (newValue: string) => {
+  emit('itemSelect', newValue);
+};
+
+onMounted(() => {
+  emit('itemSelect', model.value);
 });
 </script>
 

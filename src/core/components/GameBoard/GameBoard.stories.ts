@@ -3,7 +3,11 @@ import UiGameBoard from './GameBoard.vue';
 export default {
   title: 'Ui/GameBoard',
   component: UiGameBoard,
-  argTypes: {}
+  argTypes: {
+    currentPlayer: {
+      control: { type: 'text' }
+    }
+  }
 };
 
 const Template = (args: any, { argTypes }: any) => ({
@@ -19,6 +23,16 @@ const Template = (args: any, { argTypes }: any) => ({
 });
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  currentPlayer: 'X'
+};
 
-Default.parameters = {};
+Default.parameters = {
+  docs: {
+    source: {
+      code: `<ui-game-board currentPlayer="x" />`,
+      language: 'vue',
+      type: 'auto'
+    }
+  }
+};

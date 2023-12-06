@@ -51,7 +51,7 @@ const bgSelect = computed(() => {
 
 const selectActive = () => {
   active.value = true;
-  emit('active', active.value);
+  emit('active', { isActive: active.value, itemSelected: props.itemSelect });
   return active.value;
 };
 </script>

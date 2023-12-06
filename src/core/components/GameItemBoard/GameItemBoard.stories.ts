@@ -3,7 +3,11 @@ import UiGameItemBoard from './GameItemBoard.vue';
 export default {
   title: 'Ui/GameItemBoard',
   component: UiGameItemBoard,
-  argTypes: {}
+  argTypes: {
+    itemSelect: {
+      control: { type: 'text' }
+    }
+  }
 };
 
 const Template = (args: any, { argTypes }: any) => ({
@@ -19,6 +23,16 @@ const Template = (args: any, { argTypes }: any) => ({
 });
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  itemSelect: 'X'
+};
 
-Default.parameters = {};
+Default.parameters = {
+  docs: {
+    source: {
+      code: `<ui-game-item-board itemSelect="x" />`,
+      language: 'vue',
+      type: 'auto'
+    }
+  }
+};

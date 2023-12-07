@@ -2,7 +2,7 @@
   <div class="column items-center">
     <UiLogoGame />
     <UiCardSelect class="q-mt-lg" @item-select="playerSelect = $event" />
-    <UiBaseButton class="q-mt-lg" />
+    <UiBaseButton class="q-mt-lg" @click="newGameCPU" />
     <UiBaseButton
       class="q-mt-md"
       label="new game (vs player)"
@@ -19,4 +19,12 @@ import UiCardSelect from '~~/src/core/components/CardSelect/CardSelect.vue';
 import UiBaseButton from '~~/src/core/components/BaseButton/BaseButton.vue';
 
 const playerSelect = ref<string>();
+const router = useRouter();
+
+const newGameCPU = () => {
+  router.push({
+    path: '/twoPlayer',
+    query: { selectedPlayer: playerSelect.value }
+  });
+};
 </script>

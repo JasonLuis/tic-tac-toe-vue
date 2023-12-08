@@ -1,28 +1,25 @@
 <template>
   <div class="">
-    <div class="row items-center">
-      <UiLogoGame class="" />
-      <UiCardTurn class="q-ml-xl" />
+    <div class="row items-center justify-between">
+      <UiLogoGame />
+      <UiCardTurn :turn="getItemPlayer" />
       <UiBtnRefresh />
     </div>
     <div class="row items-center q-mt-lg">
-      <UiGameBoard />
+      <UiGameBoard :current-player="getItemPlayer" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import UiLogoGame from '~~/src/core/components/LogoGame/LogoGame.vue';
 import UiCardTurn from '~~/src/core/components/CardTurn/CardTurn.vue';
 import UiBtnRefresh from '~~/src/core/components/ButtonRefresh/ButtonRefresh.vue';
 import UiGameBoard from '~~/src/core/components/GameBoard/GameBoard.vue';
 
-const route = useRoute();
+import { useplayerCurrent } from '~~/src/store/playerCurrent';
 
-const param = computed(() => {
-  return route.params.selectedPlayer;
-});
+const { getItemPlayer } = storeToRefs(useplayerCurrent());
 </script>
 
 <style scoped lang="scss"></style>

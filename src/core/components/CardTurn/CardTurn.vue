@@ -10,20 +10,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 enum Turn {
   x = 'X',
   o = 'O'
 }
 
 const props = defineProps<{
-  turn: Turn;
+  turn: string;
 }>();
 
 const getIcon = computed(() => {
   return props.turn === Turn.x
     ? () => new URL(`../../assets/icon/icon-x.svg`, import.meta.url).href
     : () => new URL(`../../assets/icon/icon-o.svg`, import.meta.url).href;
+});
+
+onMounted(() => {
+  console.log('turn', props.turn);
 });
 </script>
 

@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     '@quasar/extras/material-icons/material-icons.css',
     '~/core/assets/styles/quasar.sass'
   ],
+  modules: ['@pinia/nuxt'],
   build: {
     transpile: ['quasar']
   },

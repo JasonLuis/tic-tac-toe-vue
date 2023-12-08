@@ -18,13 +18,17 @@ import UiLogoGame from '~~/src/core/components/LogoGame/LogoGame.vue';
 import UiCardSelect from '~~/src/core/components/CardSelect/CardSelect.vue';
 import UiBaseButton from '~~/src/core/components/BaseButton/BaseButton.vue';
 
-const playerSelect = ref<string>();
+import { useplayerCurrent } from '~~/src/store/playerCurrent';
+
+const { setItemPlayer } = useplayerCurrent();
+
+const playerSelect = ref<string>('X');
 const router = useRouter();
 
 const newGameCPU = () => {
+  setItemPlayer(playerSelect.value);
   router.push({
-    path: '/twoPlayer',
-    query: { selectedPlayer: playerSelect.value }
+    path: '/twoPlayer'
   });
 };
 </script>

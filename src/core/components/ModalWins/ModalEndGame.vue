@@ -16,7 +16,7 @@
       </q-card-section>
 
       <q-card-section class="row justify-center q-pa-none q-mt-lg">
-        <q-btn class="btn-quit">Quit</q-btn>
+        <q-btn class="btn-quit" @click="closeModal()">Quit</q-btn>
         <q-btn class="btn-next q-ml-md">Next Round</q-btn>
       </q-card-section>
     </q-card>
@@ -29,6 +29,9 @@ enum Winner {
   x = 'X',
   o = 'O'
 }
+
+const emit = defineEmits(['close']);
+
 const props = withDefaults(
   defineProps<{
     modal: boolean;
@@ -36,7 +39,7 @@ const props = withDefaults(
     winner?: Winner;
   }>(),
   {
-    modal: true,
+    modal: false,
     winner: undefined
   }
 );
@@ -60,6 +63,12 @@ const getStyle = computed(() => {
     return '#A8BFC9';
   }
 });
+
+const closeModal = () => {
+  const router = useRouter();
+  router.back();
+  emit('close', false);
+};
 </script>
 
 <style scoped lang="scss">

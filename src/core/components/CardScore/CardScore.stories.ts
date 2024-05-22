@@ -29,7 +29,7 @@ const Template = (args: any, { argTypes }: any) => ({
   template: '<ui-card-score v-bind="args">'
 });
 
-export const Default = Template.bind({});
+export const Default: any = Template.bind({});
 Default.args = {
   player: 'player1',
   text: 'x (You)',

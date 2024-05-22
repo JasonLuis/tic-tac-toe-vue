@@ -21,7 +21,7 @@ const config: StorybookConfig = {
       plugins: [
         quasar({
           sassVariables: '../src/core/assets/styles/quasar.variables.sass'
-        })
+        }),
       ]
     });
   }

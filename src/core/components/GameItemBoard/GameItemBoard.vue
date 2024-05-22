@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const emit = defineEmits(['active']);
 
@@ -18,10 +18,26 @@ const active = ref<boolean>(false);
 const props = withDefaults(
   defineProps<{
     itemSelect: string;
+    selectOnePlayer: boolean;
+    refresh: boolean;
   }>(),
   {
-    itemSelect: 'X'
+    itemSelect: 'X',
+    refresh: false,
+    selectOnePlayer: false
   }
+);
+
+watch(
+  () => props.refresh,
+  (newX: boolean) => {
+    if (newX === true) active.value = false;
+  }
+
+  // () => props.selectOnePlayer,
+  // (newX: boolean) => {
+
+  // }
 );
 
 const icon = computed(() => {
@@ -50,9 +66,10 @@ const bgSelect = computed(() => {
 });
 
 const selectActive = () => {
-  active.value = true;
-  emit('active', { isActive: active.value, itemSelected: props.itemSelect });
-  return active.value;
+  if (!active.value) {
+    active.value = true;
+    emit('active', { isActive: active.value, itemSelected: props.itemSelect });
+  }
 };
 </script>
 

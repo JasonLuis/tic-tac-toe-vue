@@ -17,7 +17,9 @@
 
       <q-card-section class="row justify-center q-pa-none q-mt-lg">
         <q-btn class="btn-quit" @click="closeModal()">Quit</q-btn>
-        <q-btn class="btn-next q-ml-md">Next Round</q-btn>
+        <q-btn class="btn-next q-ml-md" @click="refreshGame()"
+          >Next Round</q-btn
+        >
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -30,7 +32,7 @@ enum Winner {
   o = 'O'
 }
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'refresh']);
 
 const props = withDefaults(
   defineProps<{
@@ -68,6 +70,10 @@ const closeModal = () => {
   const router = useRouter();
   router.back();
   emit('close', false);
+};
+
+const refreshGame = () => {
+  emit('refresh');
 };
 </script>
 

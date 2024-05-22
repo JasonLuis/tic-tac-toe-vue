@@ -22,7 +22,7 @@ const Template = (args: any, { argTypes }: any) => ({
   template: '<ui-game-board v-bind="args">'
 });
 
-export const Default = Template.bind({});
+export const Default: any = Template.bind({});
 Default.args = {
   currentPlayer: 'X'
 };

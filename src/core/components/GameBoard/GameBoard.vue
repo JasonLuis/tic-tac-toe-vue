@@ -38,7 +38,7 @@
         @active="populateArray(5, $event)"
       />
     </div>
-    <div class="row">
+    <div class="row q-mb-md">
       <UiGameItemBoard
         class="q-mr-md"
         :item-select="getValue(6)"
@@ -57,6 +57,25 @@
         @active="populateArray(8, $event)"
       />
     </div>
+    <div class="row">
+      <UiCardScore
+        class="q-mr-md"
+        :player="Select.player1"
+        :score="getScorePlayerOne"
+        :text="getTextPlayer1"
+      />
+      <UiCardScore
+        class="q-mr-md"
+        :player="Select.ties"
+        :score="getScoreTies"
+        text="ties"
+      />
+      <UiCardScore
+        :player="Select.player2"
+        :score="getScorePlayerTwo"
+        :text="getTextPlayer2"
+      />
+    </div>
     <UiModalWins
       :modal="openModal"
       :text-win="winnerText"
@@ -68,18 +87,33 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import UiGameItemBoard from '../GameItemBoard/GameItemBoard.vue';
 import UiModalWins from '../ModalWins/ModalEndGame.vue';
-
+import UiCardScore from '../CardScore/CardScore.vue';
 import { useplayerCurrent } from '../../../store/playerCurrent';
+
+enum Select {
+  player1 = 'player1',
+  player2 = 'player2',
+  ties = 'ties'
+}
+
 enum Winner {
   x = 'X',
   o = 'O'
 }
 
-const { setItemPlayer } = useplayerCurrent();
-const { getItemPlayer } = storeToRefs(useplayerCurrent());
+const { setItemPlayer, setScorePlayerOne, setScorePlayerTwo, setScoreTies } =
+  useplayerCurrent();
+const {
+  getItemPlayer,
+  getPlayerOne,
+  getPlayerTwo,
+  getScorePlayerOne,
+  getScorePlayerTwo,
+  getScoreTies
+} = storeToRefs(useplayerCurrent());
 
 const winningCombos = [
   [0, 1, 2],
@@ -105,6 +139,7 @@ interface GameBoard {
 const arrayBoard: Array<GameBoard> = [];
 const props = defineProps<{
   currentPlayer: string;
+  isComputer: boolean;
 }>();
 
 function isWin() {
@@ -139,6 +174,7 @@ function populateArray(position: number, gameBoard: GameBoard) {
       refreshItems.value = false;
     } else {
       openModal.value = true;
+      setScoreTies();
       winnerItem.value = undefined;
       winnerText.value = '';
     }
@@ -146,6 +182,9 @@ function populateArray(position: number, gameBoard: GameBoard) {
     openModal.value = true;
     winnerItem.value = gameBoard.itemSelected as Winner;
     winnerText.value = `PLAYER ${gameBoard.itemSelected} WINS!`;
+
+    if (gameBoard.itemSelected === getPlayerOne.value) setScorePlayerOne();
+    else setScorePlayerTwo();
   }
 }
 
@@ -170,6 +209,14 @@ function isArrayComplete() {
 
   return false;
 }
+
+const getTextPlayer1 = computed(() => {
+  return `${getPlayerOne.value} (You)`;
+});
+
+const getTextPlayer2 = computed(() => {
+  return `${getPlayerTwo.value} (CPU)`;
+});
 
 onMounted(() => {
   if (getItemPlayer.value === undefined || getItemPlayer.value === '') {

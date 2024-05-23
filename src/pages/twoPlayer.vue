@@ -6,7 +6,7 @@
       <UiBtnRefresh />
     </div>
     <div class="row items-center q-mt-lg">
-      <UiGameBoard :current-player="getItemPlayer" />
+      <UiGameBoard :current-player="getItemPlayer" :is-computer="false" />
     </div>
   </div>
 </template>

@@ -20,13 +20,17 @@ import UiBaseButton from '~~/src/core/components/BaseButton/BaseButton.vue';
 
 import { useplayerCurrent } from '~~/src/store/playerCurrent';
 
-const { setItemPlayer } = useplayerCurrent();
+const { setItemPlayer, setPlayerOne, setPlayerTwo } = useplayerCurrent();
+const { getPlayerOne } = storeToRefs(useplayerCurrent());
 
 const playerSelect = ref<string>('X');
 const router = useRouter();
 
 const newGameCPU = () => {
   setItemPlayer(playerSelect.value);
+  setPlayerOne(playerSelect.value);
+  setPlayerTwo(getPlayerOne.value.toUpperCase() === 'X' ? 'O' : 'X');
+
   router.push({
     path: '/twoPlayer'
   });

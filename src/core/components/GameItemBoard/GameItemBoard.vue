@@ -1,7 +1,7 @@
 <template>
   <div
-    class="frame row justify-center items-center"
-    :class="bgSelect"
+    class="row justify-center items-center"
+    :class="[bgSelect, isWin]"
     @click="selectActive"
   >
     <q-img v-if="icon !== undefined" :src="icon" />
@@ -19,32 +19,63 @@ const props = withDefaults(
   defineProps<{
     itemSelect: string;
     selectOnePlayer: boolean;
+    selectOnePlayerValue: string;
+    win: boolean;
     refresh: boolean;
   }>(),
   {
     itemSelect: 'X',
     refresh: false,
-    selectOnePlayer: false
+    selectOnePlayer: false,
+    win: false,
+    selectOnePlayerValue: undefined
   }
 );
 
 watch(
   () => props.refresh,
   (newX: boolean) => {
-    if (newX === true) active.value = false;
+    if (newX === true) {
+      active.value = false;
+    }
   }
-
-  // () => props.selectOnePlayer,
-  // (newX: boolean) => {
-
-  // }
 );
 
+const isRoundTwoPlayer = computed(() => {
+  return (
+    props.selectOnePlayer === true && props.selectOnePlayerValue !== undefined
+  );
+});
+
+watch(isRoundTwoPlayer, newValue => {
+  if (newValue) active.value = true;
+});
+
+const isWin = computed(() => {
+  if (props.win && active.value) {
+    if (props.itemSelect.toUpperCase() === 'X') {
+      return 'frame-win-x';
+    } else if (props.itemSelect.toUpperCase() === 'O') {
+      return 'frame-win-o';
+    }
+  }
+
+  return 'frame-normal';
+});
+
 const icon = computed(() => {
+  if (props.win) {
+    if (props.itemSelect.toUpperCase() === 'X') {
+      return new URL(`../../assets/icon/icon-x-win.svg`, import.meta.url).href;
+    } else if (props.itemSelect.toUpperCase() === 'O') {
+      return new URL(`../../assets/icon/icon-o-win.svg`, import.meta.url).href;
+    }
+  }
+
   if (active.value) {
-    if (props.itemSelect.toUpperCase() === 'x'.toUpperCase()) {
+    if (props.itemSelect.toUpperCase() === 'X') {
       return new URL(`../../assets/icon/icon-x-blue.svg`, import.meta.url).href;
-    } else if (props.itemSelect.toUpperCase() === 'o'.toUpperCase()) {
+    } else if (props.itemSelect.toUpperCase() === 'O') {
       return new URL(`../../assets/icon/icon-o-yellow.svg`, import.meta.url)
         .href;
     }
@@ -74,13 +105,27 @@ const selectActive = () => {
 </script>
 
 <style scoped lang="scss">
-.frame {
+%box {
   width: 140px;
   height: 140px;
   border-radius: 15px;
+}
+
+.frame-normal {
+  @extend %box;
   background: $semi-dark-navy;
   box-shadow: 0px -8px 0px 0px #10212a inset;
   cursor: url('../../assets/icon/pointer.svg'), default;
+}
+
+.frame-win-o {
+  @extend %box;
+  background: #f2b137;
+}
+
+.frame-win-x {
+  @extend %box;
+  background: #31c3bd;
 }
 
 .q-img {

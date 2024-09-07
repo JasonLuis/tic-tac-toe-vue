@@ -1,60 +1,18 @@
 <template>
   <div>
-    <div class="row q-mb-md">
+    <div
+      v-for="rowIndex in [0, 3, 6]"
+      :key="rowIndex"
+      class="row justify-between q-mb-md"
+    >
       <UiGameItemBoard
-        class="q-mr-md"
-        :item-select="getValue(0)"
+        v-for="colIndex in [0, 1, 2]"
+        :key="rowIndex + colIndex"
+        class=""
+        :item-select="getValue(rowIndex + colIndex)"
         :refresh="refreshItems"
-        @active="populateArray(0, $event)"
-      />
-      <UiGameItemBoard
-        class="q-mr-md"
-        :item-select="getValue(1)"
-        :refresh="refreshItems"
-        @active="populateArray(1, $event)"
-      />
-      <UiGameItemBoard
-        :item-select="getValue(2)"
-        :refresh="refreshItems"
-        @active="populateArray(2, $event)"
-      />
-    </div>
-    <div class="row q-mb-md">
-      <UiGameItemBoard
-        class="q-mr-md"
-        :item-select="getValue(3)"
-        :refresh="refreshItems"
-        @active="populateArray(3, $event)"
-      />
-      <UiGameItemBoard
-        class="q-mr-md"
-        :item-select="getValue(4)"
-        :refresh="refreshItems"
-        @active="populateArray(4, $event)"
-      />
-      <UiGameItemBoard
-        :item-select="getValue(5)"
-        :refresh="refreshItems"
-        @active="populateArray(5, $event)"
-      />
-    </div>
-    <div class="row q-mb-md">
-      <UiGameItemBoard
-        class="q-mr-md"
-        :item-select="getValue(6)"
-        :refresh="refreshItems"
-        @active="populateArray(6, $event)"
-      />
-      <UiGameItemBoard
-        class="q-mr-md"
-        :item-select="getValue(7)"
-        :refresh="refreshItems"
-        @active="populateArray(7, $event)"
-      />
-      <UiGameItemBoard
-        :item-select="getValue(8)"
-        :refresh="refreshItems"
-        @active="populateArray(8, $event)"
+        :win="arrayBoard[rowIndex + colIndex]?.win"
+        @active="populateArray(rowIndex + colIndex, $event)"
       />
     </div>
     <div class="row">
@@ -81,13 +39,13 @@
       :text-win="winnerText"
       :winner="winnerItem"
       @close="openModal = $event"
-      @refresh="refreshGame()"
+      @refresh="refreshGame"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import UiGameItemBoard from '../GameItemBoard/GameItemBoard.vue';
 import UiModalWins from '../ModalWins/ModalEndGame.vue';
 import UiCardScore from '../CardScore/CardScore.vue';
@@ -106,6 +64,7 @@ enum Winner {
 
 const { setItemPlayer, setScorePlayerOne, setScorePlayerTwo, setScoreTies } =
   useplayerCurrent();
+
 const {
   getItemPlayer,
   getPlayerOne,
@@ -114,6 +73,19 @@ const {
   getScorePlayerTwo,
   getScoreTies
 } = storeToRefs(useplayerCurrent());
+
+const openModal = ref(false);
+const refreshItems = ref(false);
+const winnerText = ref<string | undefined>();
+const winnerItem = ref<Winner | undefined>();
+
+const arrayBoard: Array<{
+  isActive?: boolean;
+  itemSelected: string | undefined;
+  win?: boolean;
+}> = [];
+
+const props = defineProps<{ currentPlayer: string; isComputer: boolean }>();
 
 const winningCombos = [
   [0, 1, 2],
@@ -126,39 +98,27 @@ const winningCombos = [
   [2, 4, 6]
 ];
 
-const openModal = ref<boolean>(false);
-const refreshItems = ref<boolean>(false);
-const winnerText = ref<string | undefined>();
-const winnerItem = ref<Winner | undefined>();
-
-interface GameBoard {
-  isActive?: boolean;
-  itemSelected: string | undefined;
-}
-
-const arrayBoard: Array<GameBoard> = [];
-const props = defineProps<{
-  currentPlayer: string;
-  isComputer: boolean;
-}>();
-
 function isWin() {
-  for (const combo of winningCombos) {
+  return winningCombos.some(combo => {
     const [a, b, c] = combo;
-
-    if (
+    const result =
       arrayBoard[a]?.itemSelected &&
-      arrayBoard[a]?.itemSelected === arrayBoard[b]?.itemSelected &&
-      arrayBoard[a]?.itemSelected === arrayBoard[c]?.itemSelected
-    ) {
-      return true;
-    }
-  }
+      arrayBoard[a].itemSelected === arrayBoard[b]?.itemSelected &&
+      arrayBoard[a].itemSelected === arrayBoard[c]?.itemSelected;
 
-  return false;
+    if (result) {
+      arrayBoard[a].win = true;
+      arrayBoard[b].win = true;
+      arrayBoard[c].win = true;
+    }
+    return result;
+  });
 }
 
-function populateArray(position: number, gameBoard: GameBoard) {
+function populateArray(
+  position: number,
+  gameBoard: { isActive?: boolean; itemSelected: string | undefined }
+) {
   arrayBoard[position] = {
     isActive: gameBoard.isActive,
     itemSelected: gameBoard.itemSelected
@@ -166,34 +126,26 @@ function populateArray(position: number, gameBoard: GameBoard) {
 
   if (!isWin()) {
     if (isArrayComplete()) {
-      if (getItemPlayer.value === 'X') {
-        setItemPlayer('O');
-      } else if (getItemPlayer.value === 'O') {
-        setItemPlayer('X');
-      }
-      refreshItems.value = false;
-    } else {
       openModal.value = true;
       setScoreTies();
       winnerItem.value = undefined;
       winnerText.value = '';
+    } else {
+      setItemPlayer(getItemPlayer.value === 'X' ? 'O' : 'X');
+      refreshItems.value = false;
     }
   } else {
     openModal.value = true;
     winnerItem.value = gameBoard.itemSelected as Winner;
     winnerText.value = `PLAYER ${gameBoard.itemSelected} WINS!`;
-
-    if (gameBoard.itemSelected === getPlayerOne.value) setScorePlayerOne();
-    else setScorePlayerTwo();
+    gameBoard.itemSelected === getPlayerOne.value
+      ? setScorePlayerOne()
+      : setScorePlayerTwo();
   }
 }
 
 function getValue(position: number) {
-  if (arrayBoard[position] === undefined) {
-    return props.currentPlayer;
-  }
-
-  return arrayBoard[position].itemSelected;
+  return arrayBoard[position]?.itemSelected || props.currentPlayer;
 }
 
 function refreshGame() {
@@ -203,27 +155,22 @@ function refreshGame() {
 }
 
 function isArrayComplete() {
-  for (let i = 0; i < 9; i++) {
-    if (arrayBoard[i]?.itemSelected === undefined) return true;
-  }
-
-  return false;
+  const items = arrayBoard.filter(item => item.isActive === true).length === 9;
+  return items;
 }
 
-const getTextPlayer1 = computed(() => {
-  return `${getPlayerOne.value} (You)`;
-});
+const getTextPlayer1 = computed(() => `${getPlayerOne.value} (You)`);
+const getTextPlayer2 = computed(() => `${getPlayerTwo.value} (CPU)`);
 
-const getTextPlayer2 = computed(() => {
-  return `${getPlayerTwo.value} (CPU)`;
+// Tornando a função refreshGame acessível via ref
+defineExpose({
+  refreshGame
 });
 
 onMounted(() => {
-  if (getItemPlayer.value === undefined || getItemPlayer.value === '') {
+  if (!getItemPlayer.value) {
     const router = useRouter();
     router.back();
   }
 });
 </script>
-
-<style scoped lang="scss"></style>

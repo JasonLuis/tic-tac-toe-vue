@@ -18,7 +18,9 @@
     <div class="row">
       <UiCardScore
         class="q-mr-md"
-        :player="Select.player1"
+        :player="
+          getPlayerOne.toUpperCase() === 'X' ? Select.playerX : Select.playerO
+        "
         :score="getScorePlayerOne"
         :text="getTextPlayer1"
       />
@@ -29,7 +31,9 @@
         text="ties"
       />
       <UiCardScore
-        :player="Select.player2"
+        :player="
+          getPlayerOne.toUpperCase() === 'O' ? Select.playerX : Select.playerO
+        "
         :score="getScorePlayerTwo"
         :text="getTextPlayer2"
       />
@@ -52,8 +56,8 @@ import UiCardScore from '../CardScore/CardScore.vue';
 import { useplayerCurrent } from '../../../store/playerCurrent';
 
 enum Select {
-  player1 = 'player1',
-  player2 = 'player2',
+  playerX = 'X',
+  playerO = 'O',
   ties = 'ties'
 }
 
@@ -159,8 +163,8 @@ function isArrayComplete() {
   return items;
 }
 
-const getTextPlayer1 = computed(() => `${getPlayerOne.value} (You)`);
-const getTextPlayer2 = computed(() => `${getPlayerTwo.value} (CPU)`);
+const getTextPlayer1 = computed(() => `${getPlayerOne.value} (Player 1)`);
+const getTextPlayer2 = computed(() => `${getPlayerTwo.value} (Player 2)`);
 
 // Tornando a função refreshGame acessível via ref
 defineExpose({

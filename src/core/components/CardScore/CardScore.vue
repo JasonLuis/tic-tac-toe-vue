@@ -10,8 +10,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 enum Select {
-  player1 = 'player1',
-  player2 = 'player2',
+  playerX = 'X',
+  playerO = 'O',
   ties = 'ties'
 }
 const props = defineProps<{
@@ -21,10 +21,10 @@ const props = defineProps<{
 }>();
 
 const bgCard = computed(() => {
-  if (props.player === Select.player1) {
-    return 'bg-p1';
-  } else if (props.player === Select.player2) {
-    return 'bg-p2';
+  if (props.player === Select.playerX) {
+    return 'bg-x';
+  } else if (props.player === Select.playerO) {
+    return 'bg-o';
   } else {
     return 'bg-ties';
   }
@@ -47,7 +47,7 @@ const bgCard = computed(() => {
   font-style: normal;
   line-height: normal;
 }
-.bg-p1 {
+.bg-x {
   background: $light-blue;
 }
 
@@ -55,7 +55,7 @@ const bgCard = computed(() => {
   background: $silver;
 }
 
-.bg-p2 {
+.bg-o {
   background: $light-yellow;
 }
 

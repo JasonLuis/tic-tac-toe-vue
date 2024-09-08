@@ -27,6 +27,11 @@ export const useplayerCurrent = defineStore('player', {
     },
     setPlayerTwo(player: string) {
       this.playerTwo = player;
+    },
+    resetScore() {
+      this.scoreTies = 0;
+      this.scorePlayerOne = 0;
+      this.scoreePlayerTwo = 0;
     }
   },
   getters: {

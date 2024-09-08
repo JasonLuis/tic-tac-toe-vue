@@ -27,10 +27,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useplayerCurrent } from '../../../store/playerCurrent';
+
 enum Winner {
   x = 'X',
   o = 'O'
 }
+
+const { resetScore } = useplayerCurrent();
 
 const emit = defineEmits(['close', 'refresh']);
 
@@ -67,6 +71,7 @@ const getStyle = computed(() => {
 });
 
 const closeModal = () => {
+  resetScore();
   const router = useRouter();
   router.back();
   emit('close', false);

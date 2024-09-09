@@ -1,4 +1,4 @@
-import UiGameBoard from './GameBoard.vue';
+import UiGameBoard from './GameBoardMultiplayer.vue';
 
 export default {
   title: 'Ui/GameBoard',

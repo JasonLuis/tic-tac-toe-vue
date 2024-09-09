@@ -6,7 +6,7 @@
       <UiBtnRefresh @click="callRefreshGame" />
     </div>
     <div class="row items-center q-mt-lg">
-      <UiGameBoardMultiplayer
+      <UiGameBoardSinglePlayer
         ref="gameBoardRef"
         :current-player="getItemPlayer"
         :is-computer="false"
@@ -20,13 +20,13 @@ import { ref } from 'vue';
 import UiLogoGame from '~~/src/core/components/LogoGame/LogoGame.vue';
 import UiCardTurn from '~~/src/core/components/CardTurn/CardTurn.vue';
 import UiBtnRefresh from '~~/src/core/components/ButtonRefresh/ButtonRefresh.vue';
-import UiGameBoardMultiplayer from '~/core/components/GameBoard/GameBoardMultiplayer.vue';
+import UiGameBoardSinglePlayer from '~/core/components/GameBoard/GameBoardSingleplayer.vue';
 
 import { useplayerCurrent } from '~~/src/store/playerCurrent';
 
 const { getItemPlayer } = storeToRefs(useplayerCurrent());
 
-const gameBoardRef = ref<InstanceType<typeof UiGameBoardMultiplayer> | null>(
+const gameBoardRef = ref<InstanceType<typeof UiGameBoardSinglePlayer> | null>(
   null
 );
 

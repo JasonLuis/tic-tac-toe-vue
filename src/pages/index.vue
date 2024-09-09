@@ -32,7 +32,7 @@ const newGameCPU = () => {
   setPlayerTwo(getPlayerOne.value.toUpperCase() === 'X' ? 'O' : 'X');
 
   router.push({
-    path: '/twoPlayer'
+    path: '/singlePlayer'
   });
 };
 </script>

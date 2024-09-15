@@ -11,7 +11,7 @@
         class=""
         :item-select="getValue(rowIndex + colIndex)"
         :refresh="refreshItems"
-        :select-one-player="arrayBoard[rowIndex + colIndex].isActive"
+        :select-one-player="true"
         :select-one-player-value="arrayBoard[rowIndex + colIndex].itemSelected"
         :win="arrayBoard[rowIndex + colIndex]?.win"
         @active="populateArray(rowIndex + colIndex, $event)"
@@ -56,6 +56,10 @@ import UiGameItemBoard from '../GameItemBoard/GameItemBoard.vue';
 import UiModalWins from '../ModalWins/ModalEndGame.vue';
 import UiCardScore from '../CardScore/CardScore.vue';
 import { useplayerCurrent } from '../../../store/playerCurrent';
+import type { IBoard } from '~/server/IBoard';
+import { winningCombos } from '~/server/WinningCombos';
+import { Maxmin } from '~/server/maxmin/Maxmin';
+import { NivelEnum } from '~/server/NivelEnum';
 
 enum Select {
   playerX = 'X',
@@ -85,37 +89,32 @@ const refreshItems = ref(false);
 const winnerText = ref<string | undefined>();
 const winnerItem = ref<Winner | undefined>();
 
-const arrayBoard: Array<{
-  isActive?: boolean;
-  itemSelected: string | undefined;
-  win?: boolean;
-}> = [];
+const arrayBoard = ref<IBoard[]>(
+  Array.from({ length: 9 }, () => ({
+    isActive: false,
+    itemSelected: undefined,
+    win: false
+  }))
+);
 
-const props = defineProps<{ currentPlayer: string; isComputer: boolean }>();
-
-const winningCombos = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-];
+const props = defineProps<{
+  currentPlayer: string;
+  isComputer: boolean;
+  difficulty: NivelEnum;
+}>();
 
 function isWin() {
   return winningCombos.some(combo => {
     const [a, b, c] = combo;
     const result =
-      arrayBoard[a]?.itemSelected &&
-      arrayBoard[a].itemSelected === arrayBoard[b]?.itemSelected &&
-      arrayBoard[a].itemSelected === arrayBoard[c]?.itemSelected;
+      arrayBoard.value[a]?.itemSelected &&
+      arrayBoard.value[a].itemSelected === arrayBoard.value[b]?.itemSelected &&
+      arrayBoard.value[a].itemSelected === arrayBoard.value[c]?.itemSelected;
 
     if (result) {
-      arrayBoard[a].win = true;
-      arrayBoard[b].win = true;
-      arrayBoard[c].win = true;
+      arrayBoard.value[a].win = true;
+      arrayBoard.value[b].win = true;
+      arrayBoard.value[c].win = true;
     }
     return result;
   });
@@ -125,7 +124,7 @@ function populateArray(
   position: number,
   gameBoard: { isActive?: boolean; itemSelected: string | undefined }
 ) {
-  arrayBoard[position] = {
+  arrayBoard.value[position] = {
     isActive: gameBoard.isActive,
     itemSelected: gameBoard.itemSelected
   };
@@ -137,10 +136,32 @@ function populateArray(
       winnerItem.value = undefined;
       winnerText.value = '';
     } else {
-      arrayBoard[position] = {
+      arrayBoard.value[position] = {
         isActive: gameBoard.isActive,
         itemSelected: gameBoard.itemSelected
       };
+      if (props.difficulty === NivelEnum.Facil) {
+        fillRandomPosition(getItemPlayer.value === 'O' ? 'X' : 'O');
+      } else {
+        const bestMove = Maxmin.findBestMove(
+          arrayBoard.value,
+          props.difficulty
+        );
+        if (bestMove !== -1) {
+          arrayBoard.value[bestMove].isActive = true;
+          arrayBoard.value[bestMove].itemSelected =
+            getItemPlayer.value === 'O' ? 'X' : 'O';
+
+          if (isWin()) {
+            openModal.value = true;
+            winnerItem.value = arrayBoard.value[bestMove]
+              .itemSelected as Winner;
+            winnerText.value = `PLAYER CPU WINS!`;
+            setScorePlayerTwo();
+          }
+        }
+      }
+
       setItemPlayer(getItemPlayer.value);
       refreshItems.value = false;
     }
@@ -155,24 +176,29 @@ function populateArray(
 }
 
 function getValue(position: number) {
-  return arrayBoard[position]?.itemSelected || props.currentPlayer;
+  return arrayBoard.value[position]?.itemSelected || props.currentPlayer;
 }
 
 function refreshGame() {
   setItemPlayer(getPlayerOne.value);
-  arrayBoard.length = 0;
+  arrayBoard.value = Array.from({ length: 9 }, () => ({
+    isActive: false,
+    itemSelected: undefined,
+    win: false
+  }));
   openModal.value = false;
   refreshItems.value = true;
 }
 
 function isArrayComplete() {
-  const items = arrayBoard.filter(item => item.isActive === true).length === 9;
+  const items =
+    arrayBoard.value.filter(item => item.isActive === true).length === 9;
   return items;
 }
 
 function getRandomEmptyPosition() {
   // Filtra todas as posições vazias
-  const emptyPositions = arrayBoard
+  const emptyPositions = arrayBoard.value
     .map((item, index) => (item.itemSelected === undefined ? index : null))
     .filter(index => index !== null);
 
@@ -191,10 +217,16 @@ function fillRandomPosition(player: string) {
 
   // Verifica se ainda há posições vazias
   if (position !== -1) {
-    arrayBoard[position as number] = {
+    arrayBoard.value[position as number] = {
       isActive: true,
       itemSelected: player
     };
+  }
+  if (isWin()) {
+    openModal.value = true;
+    winnerItem.value = player as Winner;
+    winnerText.value = `PLAYER CPU WINS!`;
+    setScorePlayerTwo();
   }
 }
 

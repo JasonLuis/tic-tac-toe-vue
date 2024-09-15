@@ -2,12 +2,13 @@
   <div class="column items-center">
     <UiLogoGame />
     <UiCardSelect class="q-mt-lg" @item-select="playerSelect = $event" />
-    <UiBaseButton class="q-mt-lg" @click="newGameCPU" />
+    <UiBaseButton class="q-mt-lg" @click="newGameCPU()" />
     <UiBaseButton
       class="q-mt-md"
       label="new game (vs player)"
       background="#31C3BD"
       box-shadow="#118C87"
+      @click="newGameTwoPlayer"
     />
   </div>
 </template>
@@ -32,7 +33,17 @@ const newGameCPU = () => {
   setPlayerTwo(getPlayerOne.value.toUpperCase() === 'X' ? 'O' : 'X');
 
   router.push({
-    path: '/singlePlayer'
+    name: 'selectLevel'
+  });
+};
+
+const newGameTwoPlayer = () => {
+  setItemPlayer(playerSelect.value);
+  setPlayerOne(playerSelect.value);
+  setPlayerTwo(getPlayerOne.value.toUpperCase() === 'X' ? 'O' : 'X');
+
+  router.push({
+    path: '/twoPlayer'
   });
 };
 </script>

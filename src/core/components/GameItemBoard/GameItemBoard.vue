@@ -64,18 +64,21 @@ const isWin = computed(() => {
 });
 
 const icon = computed(() => {
+  // Prioriza selectOnePlayerValue se estiver disponível
+  const itemToRender = props.selectOnePlayerValue || props.itemSelect;
+
   if (props.win) {
-    if (props.itemSelect.toUpperCase() === 'X') {
+    if (itemToRender.toUpperCase() === 'X') {
       return new URL(`../../assets/icon/icon-x-win.svg`, import.meta.url).href;
-    } else if (props.itemSelect.toUpperCase() === 'O') {
+    } else if (itemToRender.toUpperCase() === 'O') {
       return new URL(`../../assets/icon/icon-o-win.svg`, import.meta.url).href;
     }
   }
 
   if (active.value) {
-    if (props.itemSelect.toUpperCase() === 'X') {
+    if (itemToRender.toUpperCase() === 'X') {
       return new URL(`../../assets/icon/icon-x-blue.svg`, import.meta.url).href;
-    } else if (props.itemSelect.toUpperCase() === 'O') {
+    } else if (itemToRender.toUpperCase() === 'O') {
       return new URL(`../../assets/icon/icon-o-yellow.svg`, import.meta.url)
         .href;
     }

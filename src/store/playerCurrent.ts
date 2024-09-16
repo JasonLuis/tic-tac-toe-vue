@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { LevelEnum } from '~/server/LevelEnum';
 
 export const useplayerCurrent = defineStore('player', {
   state: () => ({
@@ -7,9 +8,13 @@ export const useplayerCurrent = defineStore('player', {
     scoreePlayerTwo: 0,
     scoreTies: 0,
     playerOne: '',
-    playerTwo: ''
+    playerTwo: '',
+    level: undefined as LevelEnum | undefined
   }),
   actions: {
+    setLevel(level: LevelEnum) {
+      this.level = level;
+    },
     setItemPlayer(item: string) {
       this.itemPlayer = item;
     },
@@ -35,6 +40,9 @@ export const useplayerCurrent = defineStore('player', {
     }
   },
   getters: {
+    getLevel(): LevelEnum | undefined {
+      return this.level;
+    },
     getItemPlayer(): string {
       return this.itemPlayer.toUpperCase();
     },

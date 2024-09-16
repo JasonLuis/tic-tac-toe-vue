@@ -59,7 +59,7 @@ import { useplayerCurrent } from '../../../store/playerCurrent';
 import type { IBoard } from '~/server/IBoard';
 import { winningCombos } from '~/server/WinningCombos';
 import { Maxmin } from '~/server/maxmin/Maxmin';
-import { NivelEnum } from '~/server/NivelEnum';
+import { LevelEnum } from '~/server/LevelEnum';
 
 enum Select {
   playerX = 'X',
@@ -100,7 +100,7 @@ const arrayBoard = ref<IBoard[]>(
 const props = defineProps<{
   currentPlayer: string;
   isComputer: boolean;
-  difficulty: NivelEnum;
+  difficulty: LevelEnum;
 }>();
 
 function isWin() {
@@ -140,7 +140,7 @@ function populateArray(
         isActive: gameBoard.isActive,
         itemSelected: gameBoard.itemSelected
       };
-      if (props.difficulty === NivelEnum.Facil) {
+      if (props.difficulty === LevelEnum.Easy) {
         fillRandomPosition(getItemPlayer.value === 'O' ? 'X' : 'O');
       } else {
         const bestMove = Maxmin.findBestMove(

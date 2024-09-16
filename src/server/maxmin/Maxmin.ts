@@ -1,5 +1,5 @@
 import type { IBoard } from '../IBoard';
-import { NivelEnum } from '../NivelEnum';
+import { LevelEnum } from '../LevelEnum';
 import { winningCombos } from '../WinningCombos';
 
 const MAX_DEPTH_EASY = 2; // Fácil
@@ -77,29 +77,25 @@ export class Maxmin {
     }
   }
 
-  public static findBestMove(board: IBoard[], difficulty: NivelEnum): number {
+  public static findBestMove(board: IBoard[], difficulty: LevelEnum): number {
     let bestVal = -Infinity;
     let bestMove = -1;
     const maxDepth =
-      difficulty === NivelEnum.Facil
+      difficulty === LevelEnum.Easy
         ? MAX_DEPTH_EASY
-        : difficulty === NivelEnum.Medio
+        : difficulty === LevelEnum.Medium
           ? MAX_DEPTH_MEDIUM
           : MAX_DEPTH_HARD;
 
     // Percorre todos os espaços vazios
     for (let i = 0; i < board.length; i++) {
       if (!board[i].itemSelected) {
-        // Faz o movimento
         board[i].itemSelected = 'X';
 
-        // Calcula o valor da jogada
         const moveVal = Maxmin.minimax(board, 0, false, maxDepth);
 
-        // Desfaz o movimento
         board[i].itemSelected = undefined;
 
-        // Se o valor da jogada atual é melhor que o melhor valor, atualiza bestMove
         if (moveVal > bestVal) {
           bestMove = i;
           bestVal = moveVal;

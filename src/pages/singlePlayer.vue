@@ -6,61 +6,46 @@
       <UiBtnRefresh @click="callRefreshGame" />
     </div>
     <div class="row items-center q-mt-lg">
-      <!-- <UiGameBoardSinglePlayer
+      <UiGameBoardSinglePlayer
         ref="gameBoardRef"
         :difficulty="selectLevel"
         :current-player="getItemPlayer"
         :is-computer="false"
-      /> -->
-      <h1>{{ selectLevel }}</h1>
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import UiLogoGame from '~~/src/core/components/LogoGame/LogoGame.vue';
 import UiCardTurn from '~~/src/core/components/CardTurn/CardTurn.vue';
 import UiBtnRefresh from '~~/src/core/components/ButtonRefresh/ButtonRefresh.vue';
 import UiGameBoardSinglePlayer from '~/core/components/GameBoard/GameBoardSingleplayer.vue';
 
 import { useplayerCurrent } from '~~/src/store/playerCurrent';
-import { NivelEnum } from '~/server/NivelEnum';
+import { LevelEnum } from '~/server/LevelEnum';
 
-const { getItemPlayer } = storeToRefs(useplayerCurrent());
+const { getItemPlayer, getLevel } = storeToRefs(useplayerCurrent());
 
 const gameBoardRef = ref<InstanceType<typeof UiGameBoardSinglePlayer> | null>(
   null
 );
-const selectLevel = ref<NivelEnum>(NivelEnum.Facil);
+const selectLevel = ref<LevelEnum>(LevelEnum.Easy);
 
 function callRefreshGame() {
   gameBoardRef.value?.refreshGame();
 }
-const route = useRoute();
-const router = useRouter();
 
-// Ensure the level is set when the component is mounted
-// onMounted(() => {
-//   // if (route.query.level === undefined) {
-//   //   router.push({ name: 'index' });
-//   // }
-//   selectLevel.value = route.query.level as unknown as NivelEnum;
-// });
+onMounted(() => {
+  if (getLevel.value === undefined) {
+    const router = useRouter();
+    return router.push({
+      name: 'index'
+    });
+  }
 
-watch(
-  () => route.query.level,
-  newLevel => {
-    selectLevel.value = newLevel as unknown as NivelEnum;
-    console.log('Valor atualizado:', selectLevel.value);
-  },
-  { immediate: true } // Executa imediatamente, mesmo no carregamento inicial
-);
-
-onMounted(async () => {
-  await router.isReady(); // Aguarde o router estar completamente pronto
-  const query = route.query;
-  selectLevel.value = query.level as unknown as NivelEnum;
+  selectLevel.value = getLevel.value;
 });
 </script>
 

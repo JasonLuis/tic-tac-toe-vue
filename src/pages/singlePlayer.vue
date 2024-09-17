@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <div class="row items-center justify-between">
       <UiLogoGame />
       <UiCardTurn :turn="getItemPlayer" />
@@ -17,14 +17,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import UiLogoGame from '~~/src/core/components/LogoGame/LogoGame.vue';
-import UiCardTurn from '~~/src/core/components/CardTurn/CardTurn.vue';
-import UiBtnRefresh from '~~/src/core/components/ButtonRefresh/ButtonRefresh.vue';
-import UiGameBoardSinglePlayer from '~/core/components/GameBoard/GameBoardSingleplayer.vue';
+import UiLogoGame from '../core/components/LogoGame/LogoGame.vue';
+import UiCardTurn from '../core/components/CardTurn/CardTurn.vue';
+import UiBtnRefresh from '../core/components/ButtonRefresh/ButtonRefresh.vue';
+import UiGameBoardSinglePlayer from '../core/components/GameBoard/GameBoardSingleplayer.vue';
 
-import { useplayerCurrent } from '~~/src/store/playerCurrent';
-import { LevelEnum } from '~/server/LevelEnum';
+import { useplayerCurrent } from '../store/playerCurrent';
+import { LevelEnum } from '../server/LevelEnum';
 
 const { getItemPlayer, getLevel } = storeToRefs(useplayerCurrent());
 

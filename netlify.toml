@@ -1,0 +1,6 @@
+[build]
+  command = "yarn generate" # ou "npm run build", dependendo de como você está gerando seu projeto
+  publish = "dist"
+
+[context.production.environment]
+  NODE_VERSION = "18"

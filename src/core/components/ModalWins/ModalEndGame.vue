@@ -73,7 +73,9 @@ const getStyle = computed(() => {
 const closeModal = () => {
   resetScore();
   const router = useRouter();
-  router.back();
+  router.push({
+    name: 'index'
+  });
   emit('close', false);
 };
 

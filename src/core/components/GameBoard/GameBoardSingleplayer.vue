@@ -124,54 +124,79 @@ function populateArray(
   position: number,
   gameBoard: { isActive?: boolean; itemSelected: string | undefined }
 ) {
+  // Atualiza o tabuleiro com o item selecionado e status de ativo
+  updateBoard(position, gameBoard);
+
+  // Verifica se houve vitória
+  if (isWin()) {
+    handleWin(gameBoard);
+    return;
+  }
+
+  // Caso o tabuleiro esteja completo, abre o modal de empate
+  if (isArrayComplete()) {
+    handleTie();
+    return;
+  }
+
+  // Atualiza o tabuleiro e preenche posição conforme a dificuldade
+  handleMove(position, gameBoard);
+  setItemPlayer(getItemPlayer.value);
+  refreshItems.value = false;
+}
+
+// Função para atualizar o tabuleiro
+function updateBoard(
+  position: number,
+  gameBoard: { isActive?: boolean; itemSelected: string | undefined }
+) {
   arrayBoard.value[position] = {
     isActive: gameBoard.isActive,
     itemSelected: gameBoard.itemSelected
   };
+}
 
-  if (!isWin()) {
-    if (isArrayComplete()) {
-      openModal.value = true;
-      setScoreTies();
-      winnerItem.value = undefined;
-      winnerText.value = '';
-    } else {
-      arrayBoard.value[position] = {
-        isActive: gameBoard.isActive,
-        itemSelected: gameBoard.itemSelected
-      };
-      if (props.difficulty === LevelEnum.Easy) {
-        fillRandomPosition(getItemPlayer.value === 'O' ? 'X' : 'O');
-      } else {
-        const bestMove = Maxmin.findBestMove(
-          arrayBoard.value,
-          props.difficulty
-        );
-        if (bestMove !== -1) {
-          arrayBoard.value[bestMove].isActive = true;
-          arrayBoard.value[bestMove].itemSelected =
-            getItemPlayer.value === 'O' ? 'X' : 'O';
+// Função para lidar com vitória
+function handleWin(gameBoard: { itemSelected: string | undefined }) {
+  openModal.value = true;
+  winnerItem.value = gameBoard.itemSelected as Winner;
+  winnerText.value = `PLAYER ${gameBoard.itemSelected} WINS!`;
+  gameBoard.itemSelected === getPlayerOne.value
+    ? setScorePlayerOne()
+    : setScorePlayerTwo();
+}
 
-          if (isWin()) {
-            openModal.value = true;
-            winnerItem.value = arrayBoard.value[bestMove]
-              .itemSelected as Winner;
-            winnerText.value = `PLAYER CPU WINS!`;
-            setScorePlayerTwo();
-          }
-        }
-      }
+// Função para lidar com empate
+function handleTie() {
+  openModal.value = true;
+  setScoreTies();
+  winnerItem.value = undefined;
+  winnerText.value = '';
+}
 
-      setItemPlayer(getItemPlayer.value);
-      refreshItems.value = false;
-    }
+// Função para lidar com a jogada de acordo com a dificuldade
+function handleMove(
+  position: number,
+  gameBoard: { isActive?: boolean; itemSelected: string | undefined }
+) {
+  updateBoard(position, gameBoard);
+
+  if (props.difficulty === LevelEnum.Easy) {
+    fillRandomPosition(getItemPlayer.value === 'O' ? 'X' : 'O');
   } else {
-    openModal.value = true;
-    winnerItem.value = gameBoard.itemSelected as Winner;
-    winnerText.value = `PLAYER ${gameBoard.itemSelected} WINS!`;
-    gameBoard.itemSelected === getPlayerOne.value
-      ? setScorePlayerOne()
-      : setScorePlayerTwo();
+    const bestMove = Maxmin.findBestMove(arrayBoard.value, props.difficulty);
+    if (bestMove !== -1) {
+      arrayBoard.value[bestMove].isActive = true;
+      arrayBoard.value[bestMove].itemSelected =
+        getItemPlayer.value === 'O' ? 'X' : 'O';
+
+      if (isWin()) {
+        openModal.value = true;
+        winnerItem.value = arrayBoard.value[bestMove].itemSelected as Winner;
+        winnerText.value = 'PLAYER CPU WINS!';
+        setScorePlayerTwo();
+      }
+    }
   }
 }
 
@@ -241,7 +266,9 @@ defineExpose({
 onMounted(() => {
   if (!getItemPlayer.value) {
     const router = useRouter();
-    router.back();
+    router.push({
+      name: 'index'
+    });
   }
 });
 </script>

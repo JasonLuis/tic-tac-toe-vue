@@ -54,6 +54,7 @@ import UiGameItemBoard from '../GameItemBoard/GameItemBoard.vue';
 import UiModalWins from '../ModalWins/ModalEndGame.vue';
 import UiCardScore from '../CardScore/CardScore.vue';
 import { useplayerCurrent } from '../../../store/playerCurrent';
+import { winningCombos } from '../../../server/WinningCombos';
 
 enum Select {
   playerX = 'X',
@@ -90,17 +91,6 @@ const arrayBoard: Array<{
 }> = [];
 
 const props = defineProps<{ currentPlayer: string; isComputer: boolean }>();
-
-const winningCombos = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6]
-];
 
 function isWin() {
   return winningCombos.some(combo => {
@@ -166,7 +156,6 @@ function isArrayComplete() {
 const getTextPlayer1 = computed(() => `${getPlayerOne.value} (Player 1)`);
 const getTextPlayer2 = computed(() => `${getPlayerTwo.value} (Player 2)`);
 
-// Tornando a função refreshGame acessível via ref
 defineExpose({
   refreshGame
 });

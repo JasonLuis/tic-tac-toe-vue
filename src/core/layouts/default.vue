@@ -6,8 +6,8 @@
   </q-layout>
 </template>
 
-<style scoped lang="scss">
-.bg-dark-bavy {
+<style lang="scss">
+body {
   background-color: $dark-navy;
 }
 </style>

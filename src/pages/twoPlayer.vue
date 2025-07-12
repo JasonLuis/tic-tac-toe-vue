@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="q-py-lg">
     <div class="row items-center justify-between">
       <UiLogoGame />
       <UiCardTurn :turn="getItemPlayer" />
